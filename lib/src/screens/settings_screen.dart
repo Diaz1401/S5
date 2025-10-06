@@ -13,7 +13,7 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +83,7 @@ class SettingsScreen extends ConsumerWidget {
                         builder: (context, ref, child) {
                           final themeMode = ref.watch(themeModeProvider);
                           return DropdownButtonFormField<ThemeMode>(
-                            value: themeMode,
+                            initialValue: themeMode,
                             decoration: const InputDecoration(
                               labelText: 'Theme Mode',
                               border: OutlineInputBorder(),
