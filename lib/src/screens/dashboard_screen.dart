@@ -6,6 +6,8 @@ import 'charts_screen.dart';
 import 'alerts_screen.dart';
 import 'device_screen.dart';
 import 'settings_screen.dart';
+import '../providers/dummy_data.dart';
+import '../providers/weather_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -130,9 +132,9 @@ class DashboardScreen extends ConsumerWidget {
                     child: ParameterTile(
                       icon: Icons.water_drop,
                       title: 'pH',
-                      value: '—', // TODO: Get from provider
+                      value: DummyData.ph.toStringAsFixed(1),
                       unit: '',
-                      trend: TrendDirection.neutral,
+                      trend: DummyData.phTrend,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -140,9 +142,9 @@ class DashboardScreen extends ConsumerWidget {
                     child: ParameterTile(
                       icon: Icons.thermostat,
                       title: 'Temperature',
-                      value: '—', // TODO: Get from provider
+                      value: DummyData.temperature.toStringAsFixed(1),
                       unit: '°C',
-                      trend: TrendDirection.neutral,
+                      trend: DummyData.tempTrend,
                     ),
                   ),
                 ],
@@ -154,9 +156,9 @@ class DashboardScreen extends ConsumerWidget {
                     child: ParameterTile(
                       icon: Icons.opacity,
                       title: 'TDS',
-                      value: '—', // TODO: Get from provider
+                      value: DummyData.tds.toStringAsFixed(1),
                       unit: 'mg/L',
-                      trend: TrendDirection.neutral,
+                      trend: DummyData.tdsTrend,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -164,9 +166,9 @@ class DashboardScreen extends ConsumerWidget {
                     child: ParameterTile(
                       icon: Icons.visibility,
                       title: 'Turbidity',
-                      value: '—', // TODO: Get from provider
+                      value: DummyData.turbidity.toStringAsFixed(1),
                       unit: 'NTU',
-                      trend: TrendDirection.neutral,
+                      trend: DummyData.turbidityTrend,
                     ),
                   ),
                 ],
@@ -215,7 +217,7 @@ class DashboardScreen extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // Weather card
-              _buildWeatherCard(context),
+              _buildWeatherCard(context, ref),
             ],
           ),
         ),
@@ -223,61 +225,100 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeatherCard(BuildContext context) {
+  Widget _buildWeatherCard(BuildContext context, WidgetRef ref) {
+    final weatherAsync = ref.watch(weatherProvider);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: weatherAsync.when(
+          data: (weatherData) {
+            final current = weatherData['current'];
+            final location = weatherData['location'];
+            final forecastDays = weatherData['forecast']['forecastday'] as List;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.wb_sunny),
-                const SizedBox(width: 8),
-                Text('Weather', style: Theme.of(context).textTheme.titleMedium),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Header
+                Row(
                   children: [
+                    const Icon(Icons.wb_sunny),
+                    const SizedBox(width: 8),
                     Text(
-                      'Current',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      'Weather - ${location['name']}',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    Text(
-                      '—°C', // TODO: Get from weather provider
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const Text('—'), // TODO: Weather condition
                   ],
                 ),
-                // 3-day forecast placeholder
+                const SizedBox(height: 16),
+
+                // Current weather
                 Row(
-                  children: List.generate(3, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Day ${index + 1}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 4),
-                          const Icon(Icons.wb_sunny, size: 20),
-                          const SizedBox(height: 4),
-                          const Text('—°'), // TODO: Forecast temp
-                        ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${current['temp_c']}°C',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        Text('${current['condition']['text']}'),
+                        const SizedBox(height: 4),
+                        Text('Humidity: ${current['humidity']}%'),
+                      ],
+                    ),
+                    Image.network(
+                      'https:${current['condition']['icon']}',
+                      width: 64,
+                      height: 64,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.cloud_off, size: 48),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+                Text(
+                  'Forecast (Next ${forecastDays.length} Days)',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+
+                // Forecast list
+                Column(
+                  children: forecastDays.map((day) {
+                    final date = day['date'];
+                    final condition = day['day']['condition'];
+                    final avgTemp = day['day']['avgtemp_c'];
+                    final humidity = day['day']['avghumidity'];
+
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Image.network(
+                        'https:${condition['icon']}',
+                        width: 40,
+                        height: 40,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.cloud, size: 32),
                       ),
+                      title: Text(
+                        date,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        '${condition['text']} • Humidity: $humidity%',
+                      ),
+                      trailing: Text('${avgTemp.toStringAsFixed(1)}°C'),
                     );
-                  }),
+                  }).toList(),
                 ),
               ],
-            ),
-          ],
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, _) => Text('Error: $err'),
         ),
       ),
     );

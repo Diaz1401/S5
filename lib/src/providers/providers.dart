@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../models/sample.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'chart_dummy_data.dart';
+import '../models/chart_time_range.dart'; // tambahkan ini
 
 // TODO: Implement state management with Riverpod
 
@@ -125,9 +128,7 @@ class SyncStatusNotifier extends StateNotifier<SyncStatus> {
 final weatherEnabledProvider = StateProvider<bool>((ref) => true);
 final fuzzySensitivityProvider = StateProvider<double>((ref) => 0.5);
 
-// Chart time range provider
+// Default: tampilan 24 jam
 final chartTimeRangeProvider = StateProvider<ChartTimeRange>(
   (ref) => ChartTimeRange.day,
 );
-
-enum ChartTimeRange { day, week, month }

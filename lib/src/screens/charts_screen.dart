@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../widgets/chart_placeholder.dart';
 import '../providers/providers.dart';
+import '../models/chart_time_range.dart';
 
 class ChartsScreen extends ConsumerWidget {
   const ChartsScreen({super.key});
@@ -62,7 +63,7 @@ class ChartsScreen extends ConsumerWidget {
                         const SizedBox(height: 16),
 
                         // Chart placeholder
-                        const Expanded(child: ChartPlaceholder()),
+                        Expanded(child: ChartPlaceholder(timeRange: timeRange)),
                       ],
                     ),
                   ),

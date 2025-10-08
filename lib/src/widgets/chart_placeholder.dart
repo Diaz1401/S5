@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../providers/chart_dummy_data.dart';
+import '../models/chart_time_range.dart';
 
 class ChartPlaceholder extends StatelessWidget {
-  const ChartPlaceholder({super.key});
+  final ChartTimeRange timeRange;
+
+  const ChartPlaceholder({super.key, required this.timeRange});
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +16,10 @@ class ChartPlaceholder extends StatelessWidget {
           show: true,
           drawVerticalLine: true,
           drawHorizontalLine: true,
-          getDrawingHorizontalLine: (value) {
-            return FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1);
-          },
-          getDrawingVerticalLine: (value) {
-            return FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1);
-          },
+          getDrawingHorizontalLine: (value) =>
+              FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1),
+          getDrawingVerticalLine: (value) =>
+              FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1),
         ),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
@@ -26,18 +28,21 @@ class ChartPlaceholder extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: true, reservedSize: 30),
           ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         borderData: FlBorderData(
           show: true,
           border: Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
         ),
+        // === Dummy data lines ===
         lineBarsData: [
-          // TODO: Add actual data series from providers
-          // Example empty line chart data
           LineChartBarData(
-            spots: const [], // Empty - will be populated from provider
+            spots: ChartDummyData.phData[timeRange]!,
             isCurved: true,
             color: Colors.blue,
             barWidth: 2,
@@ -48,9 +53,46 @@ class ChartPlaceholder extends StatelessWidget {
               color: Colors.blue.withOpacity(0.1),
             ),
           ),
+          LineChartBarData(
+            spots: ChartDummyData.tempData[timeRange]!,
+            isCurved: true,
+            color: Colors.red,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.red.withOpacity(0.1),
+            ),
+          ),
+          LineChartBarData(
+            spots: ChartDummyData.tdsData[timeRange]!,
+            isCurved: true,
+            color: Colors.green,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.green.withOpacity(0.1),
+            ),
+          ),
+          LineChartBarData(
+            spots: ChartDummyData.turbidityData[timeRange]!,
+            isCurved: true,
+            color: Colors.orange,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.orange.withOpacity(0.1),
+            ),
+          ),
         ],
+        // Sesuaikan rentang grafik otomatis
         minX: 0,
-        maxX: 10,
+        maxX: ChartDummyData.phData[timeRange]!.last.x,
         minY: 0,
         maxY: 100,
       ),
