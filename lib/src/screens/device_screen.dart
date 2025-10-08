@@ -10,7 +10,7 @@ class DeviceScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Devices')),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
