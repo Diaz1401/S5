@@ -78,7 +78,7 @@ class AlertCard extends StatelessWidget {
   Color _getSeverityColor(String severity) {
     switch (severity.toLowerCase()) {
       case 'critical':
-        return AppTheme.criticalRed;
+        return AppTheme.errorRed;
       case 'warning':
         return AppTheme.warningOrange;
       case 'info':

@@ -12,6 +12,7 @@ class ChartPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
+        // === Garis grid (latar belakang grafik) ===
         gridData: FlGridData(
           show: true,
           drawVerticalLine: true,
@@ -21,6 +22,8 @@ class ChartPlaceholder extends StatelessWidget {
           getDrawingVerticalLine: (value) =>
               FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1),
         ),
+
+        // === Judul dan label sumbu ===
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: true, reservedSize: 40),
@@ -35,12 +38,16 @@ class ChartPlaceholder extends StatelessWidget {
             sideTitles: SideTitles(showTitles: false),
           ),
         ),
+
+        // === Border (bingkai grafik) ===
         borderData: FlBorderData(
           show: true,
           border: Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
         ),
-        // === Dummy data lines ===
+
+        // === Data garis (setiap parameter sensor) ===
         lineBarsData: [
+          // pH
           LineChartBarData(
             spots: ChartDummyData.phData[timeRange]!,
             isCurved: true,
@@ -53,6 +60,8 @@ class ChartPlaceholder extends StatelessWidget {
               color: Colors.blue.withOpacity(0.1),
             ),
           ),
+
+          // Suhu
           LineChartBarData(
             spots: ChartDummyData.tempData[timeRange]!,
             isCurved: true,
@@ -65,6 +74,8 @@ class ChartPlaceholder extends StatelessWidget {
               color: Colors.red.withOpacity(0.1),
             ),
           ),
+
+          // TDS
           LineChartBarData(
             spots: ChartDummyData.tdsData[timeRange]!,
             isCurved: true,
@@ -77,6 +88,8 @@ class ChartPlaceholder extends StatelessWidget {
               color: Colors.green.withOpacity(0.1),
             ),
           ),
+
+          // Kekeruhan (Turbidity)
           LineChartBarData(
             spots: ChartDummyData.turbidityData[timeRange]!,
             isCurved: true,
@@ -90,7 +103,8 @@ class ChartPlaceholder extends StatelessWidget {
             ),
           ),
         ],
-        // Sesuaikan rentang grafik otomatis
+
+        // === Rentang sumbu grafik ===
         minX: 0,
         maxX: ChartDummyData.phData[timeRange]!.last.x,
         minY: 0,

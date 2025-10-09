@@ -20,13 +20,14 @@ class ChartsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // === Judul halaman ===
               Text(
                 'Water Quality Trends',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
 
-              // Time range selector
+              // === Tombol pilihan rentang waktu ===
               Row(
                 children: [
                   _buildTimeRangeChip(context, ref, ChartTimeRange.day, '24h'),
@@ -43,29 +44,32 @@ class ChartsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // Chart area
-              Expanded(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // Legend
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildLegendItem('pH', Colors.blue),
-                            _buildLegendItem('Temp', Colors.red),
-                            _buildLegendItem('TDS', Colors.green),
-                            _buildLegendItem('Turbidity', Colors.orange),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
+              // === Area grafik ===
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // === Keterangan warna (legend) ===
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildLegendItem('pH', Colors.blue),
+                          _buildLegendItem('Temp', Colors.red),
+                          _buildLegendItem('TDS', Colors.green),
+                          _buildLegendItem('Turbidity', Colors.orange),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
 
-                        // Chart placeholder
-                        Expanded(child: ChartPlaceholder(timeRange: timeRange)),
-                      ],
-                    ),
+                      // === Grafik dummy ===
+                      SizedBox(
+                        height:
+                            300, // Gunakan SizedBox biar tidak error di ScrollView
+                        child: ChartPlaceholder(timeRange: timeRange),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -76,6 +80,7 @@ class ChartsScreen extends ConsumerWidget {
     );
   }
 
+  // === Widget pembuat tombol rentang waktu ===
   Widget _buildTimeRangeChip(
     BuildContext context,
     WidgetRef ref,
@@ -95,6 +100,7 @@ class ChartsScreen extends ConsumerWidget {
     );
   }
 
+  // === Widget pembuat keterangan warna ===
   Widget _buildLegendItem(String label, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
