@@ -2,10 +2,10 @@ import '../widgets/parameter_tile.dart';
 
 class DummyData {
   // Nilai parameter air dummy
-  static const double ph = 7.4;
-  static const double temperature = 29.6; // °C
-  static const double tds = 420.0; // mg/L
-  static const double turbidity = 12.5; // NTU
+  static const double ph = 5.4;
+  static const double temperature = 32.6; // °C
+  static const double tds = 200.0; // mg/L
+  static const double turbidity = 8.5; // NTU
 
   // Skor kualitas air (misalnya untuk StatusCard)
   static const double wqScore = 86.0;

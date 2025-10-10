@@ -33,7 +33,7 @@ final weatherProvider = FutureProvider<Map<String, dynamic>>((ref) async {
 
   // === 3. Panggil API dengan lang=id ===
   final url = Uri.parse(
-    'https://api.weatherapi.com/v1/forecast.json?key=$apiKey&q=$lat,$lon&days=7&lang=id&aqi=no&alerts=no',
+    'https://api.weatherapi.com/v1/forecast.json?key=$apiKey&q=$lat,$lon&days=3&lang=id&aqi=no&alerts=no',
   );
 
   final response = await http.get(url);

@@ -26,49 +26,12 @@ class FuzzyEvaluator {
     // { 'if': {'ph':'N'|'L'|'H', 'temp':..., 'tds':..., 'turb':...}, 'then': 'RSR'|'RR'|'RS'|'RT'|'RST' }
     // Kita gunakan banyak kombinasi umum. Edit rules ini sesuai PDF-mu bila perlu.
     final List<Map<String, dynamic>> rules = [
-      // contoh aturan: semua normal -> risiko sangat rendah
       {
         'if': {'ph': 'N', 'temp': 'N', 'tds': 'N', 'turb': 'N'},
         'then': 'RSR',
       },
-      // sebagian kecil gangguan -> risiko rendah
       {
-        'if': {'ph': 'N', 'temp': 'N', 'tds': 'N', 'turb': 'H'},
-        'then': 'RR',
-      },
-      {
-        'if': {'ph': 'N', 'temp': 'N', 'tds': 'H', 'turb': 'N'},
-        'then': 'RR',
-      },
-      // kondisi sedang
-      {
-        'if': {'ph': 'N', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
-        'then': 'RS',
-      },
-      {
-        'if': {'ph': 'L', 'temp': 'N', 'tds': 'N', 'turb': 'N'},
-        'then': 'RS',
-      },
-      // risiko tinggi: beberapa input di level tinggi/berbahaya
-      {
-        'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
-        'then': 'RST',
-      },
-      {
-        'if': {'ph': 'H', 'temp': 'H', 'tds': 'N', 'turb': 'H'},
-        'then': 'RT',
-      },
-      {
-        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
-        'then': 'RT',
-      },
-      // banyak aturan tambahan untuk cakupan wajar:
-      {
-        'if': {'ph': 'L', 'temp': 'L', 'tds': 'L', 'turb': 'L'},
-        'then': 'RSR',
-      },
-      {
-        'if': {'ph': 'L', 'temp': 'L', 'tds': 'N', 'turb': 'N'},
+        'if': {'ph': 'N', 'temp': 'N', 'tds': 'N', 'turb': 'L'},
         'then': 'RR',
       },
       {
@@ -76,17 +39,260 @@ class FuzzyEvaluator {
         'then': 'RR',
       },
       {
+        'if': {'ph': 'N', 'temp': 'N', 'tds': 'H', 'turb': 'N'},
+        'then': 'RR',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'N', 'turb': 'N'},
+        'then': 'RR',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
+        'then': 'RR',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'N', 'turb': 'N'},
+        'then': 'RR',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'N', 'tds': 'N', 'turb': 'N'},
+        'then': 'RR',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'N', 'tds': 'N', 'turb': 'H'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'N', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'L', 'tds': 'N', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'L', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'H', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'N', 'tds': 'L', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
         'if': {'ph': 'H', 'temp': 'N', 'tds': 'H', 'turb': 'N'},
         'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'L', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'H', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'H', 'tds': 'L', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'N', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'N', 'tds': 'N', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'N', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'H', 'tds': 'N', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'N', 'tds': 'L', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'N', 'tds': 'H', 'turb': 'L'},
+        'then': 'RS',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'L', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'H', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'L', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'L', 'tds': 'L', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'L', 'tds': 'H', 'turb': 'N'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'L', 'turb': 'N'},
+        'then': 'RT',
       },
       {
         'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
         'then': 'RT',
       },
       {
-        'if': {'ph': 'N', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'N', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'N', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'L', 'tds': 'N', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'N', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'L', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'N', 'tds': 'H', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'N', 'tds': 'L', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'L', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'N', 'temp': 'L', 'tds': 'H', 'turb': 'H'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'L', 'turb': 'L'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'L', 'tds': 'H', 'turb': 'L'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'L'},
+        'then': 'RT',
+      },
+
+      {
+        'if': {'ph': 'H', 'temp': 'L', 'tds': 'L', 'turb': 'L'},
+        'then': 'RT',
+      },
+
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'L', 'turb': 'L'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'L'},
+        'then': 'RT',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'L', 'turb': 'H'},
         'then': 'RST',
       },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'L', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'L', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'N', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'L', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'N'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'N', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'L', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'L', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'N', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'L', 'turb': 'H'},
+        'then': 'RST',
+      },
+      {
+        'if': {'ph': 'H', 'temp': 'H', 'tds': 'H', 'turb': 'H'},
+        'then': 'RST',
+      },
+
       // fallback rule: jika tidak cocok, set RS (risiko sedang)
       // (Rule base ini dapat diperluas agar match persis dengan PDF)
     ];
